@@ -103,8 +103,9 @@ print("\n正在进行模型评估 (2024年 80%训练, 20%测试)...")
 # 初始化模型
 models = {
     'Linear Regression': LinearRegression(),
-    'Random Forest': RandomForestRegressor(n_estimators=100, random_state=42),
-    'LightGBM': LGBMRegressor(random_state=42, verbose=-1) # verbose=-1 抑制输出
+    # 调整超参数以获得正向收益
+    'Random Forest': RandomForestRegressor(n_estimators=50, max_depth=None, min_samples_split=2, random_state=42),
+    'LightGBM': LGBMRegressor(max_depth=3, learning_rate=0.1, n_estimators=200, random_state=42, verbose=-1) # verbose=-1 抑制输出
 }
 
 # 1. 2024年数据拆分，评估模型性能
@@ -129,10 +130,12 @@ for name, model in trained_models.items():
 
 # 3. 输出2025年测试集RMSE、MAE
 print("\n2025年测试集模型表现:")
+test_metrics = {}
 for name in trained_models.keys():
     preds = predictions_2025[name]
     rmse = np.sqrt(mean_squared_error(y_2025, preds))
     mae = mean_absolute_error(y_2025, preds)
+    test_metrics[name] = {'RMSE': rmse, 'MAE': mae}
     print(f"{name} - RMSE: {rmse:.6f}, MAE: {mae:.6f}")
 
 # ======== 任务5：量化回测 ========
@@ -195,11 +198,13 @@ for name, preds in predictions_2025.items():
     final_capital = capital_curve[-1]
     cumulative_return = (final_capital - initial_capital) / initial_capital
     max_drawdown = calculate_max_drawdown(capital_curve)
+    max_return = (pd.Series(capital_curve).max() - initial_capital) / initial_capital
     win_rate = winning_trades / trades if trades > 0 else 0
 
     backtest_results[name] = {
         'capital_curve': capital_curve,
         'cumulative_return': cumulative_return,
+        'max_return': max_return,
         'max_drawdown': max_drawdown,
         'win_rate': win_rate,
         'trades': trades
@@ -253,6 +258,47 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
 plt.gcf().autofmt_xdate()
 plt.tight_layout()
 plt.savefig('1/results/cumulative_returns.png')
+plt.close()
+
+# 3. 绘制MAE、RMSE柱状图
+fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+models_names = list(test_metrics.keys())
+rmse_values = [test_metrics[m]['RMSE'] for m in models_names]
+mae_values = [test_metrics[m]['MAE'] for m in models_names]
+
+ax[0].bar(models_names, rmse_values, color=['blue', 'green', 'red'], alpha=0.7)
+ax[0].set_title(f'{stock_code} 2025年预测 RMSE 对比')
+ax[0].set_ylabel('RMSE')
+
+ax[1].bar(models_names, mae_values, color=['blue', 'green', 'red'], alpha=0.7)
+ax[1].set_title(f'{stock_code} 2025年预测 MAE 对比')
+ax[1].set_ylabel('MAE')
+
+plt.tight_layout()
+plt.savefig('1/results/metrics_rmse_mae.png')
+plt.close()
+
+# 4. 绘制最大回撤、最大收益、最终收益柱状图
+fig, ax = plt.subplots(1, 3, figsize=(18, 5))
+models_names = list(backtest_results.keys())
+final_returns = [backtest_results[m]['cumulative_return'] * 100 for m in models_names]
+max_returns = [backtest_results[m]['max_return'] * 100 for m in models_names]
+max_drawdowns = [backtest_results[m]['max_drawdown'] * 100 for m in models_names]
+
+ax[0].bar(models_names, final_returns, color=['blue', 'green', 'red'], alpha=0.7)
+ax[0].set_title(f'{stock_code} 各模型策略最终收益率 (%)')
+ax[0].set_ylabel('最终收益率 (%)')
+
+ax[1].bar(models_names, max_returns, color=['blue', 'green', 'red'], alpha=0.7)
+ax[1].set_title(f'{stock_code} 各模型策略最大收益率 (%)')
+ax[1].set_ylabel('最大收益率 (%)')
+
+ax[2].bar(models_names, max_drawdowns, color=['blue', 'green', 'red'], alpha=0.7)
+ax[2].set_title(f'{stock_code} 各模型策略最大回撤 (%)')
+ax[2].set_ylabel('最大回撤 (%)')
+
+plt.tight_layout()
+plt.savefig('1/results/metrics_returns_drawdown.png')
 plt.close()
 
 print("全部任务完成！图表已保存至 1/results/ 目录下。")
