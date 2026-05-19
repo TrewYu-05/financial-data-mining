@@ -11,7 +11,10 @@ from scipy.stats.mstats import winsorize
 import os
 
 # 配置 matplotlib 以支持中文字符显示
-plt.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei']
+plt.rcParams['font.sans-serif'] = [
+    'SimHei', 
+    'Microsoft YaHei',
+]
 plt.rcParams['axes.unicode_minus'] = False
 
 # ============= 1. 登录 Baostock =============
@@ -55,8 +58,8 @@ def fit_capm(stock_ret, market_ret, Rf_daily):
 # ============= 4. 参数设置（固定）=============
 start_train = "2020-01-01"
 end_train   = "2022-12-31"
-start_test  = "2023-01-01"
-end_test    = "2024-12-31"
+start_test  = "2020-01-01"
+end_test    = "2025-12-31"
 
 Rf_year = 0.03
 Rf_daily = (1 + Rf_year) ** (1/250) - 1
@@ -91,7 +94,7 @@ for name, code in stocks.items():
 
 # 输出结果并保存
 res_df = pd.DataFrame(result, columns=["股票", "代码", "α(Alpha)", "β(Beta)", "Alpha_PValue", "Beta_PValue"])
-res_df.to_csv("../results/capm_results.csv", index=False, encoding='utf-8-sig')
+res_df.to_csv("../results/capm_results10.csv", index=False, encoding='utf-8-sig')
 
 print("===== CAPM 拟合结果 =====")
 print(res_df.round(4))
@@ -143,7 +146,7 @@ metrics_df = pd.DataFrame({
     "卡玛比率": [stock_calmar, market_calmar]
 })
 
-metrics_df.to_csv("../results/backtest_metrics.csv", index=False, encoding='utf-8-sig')
+metrics_df.to_csv("../results/backtest_metrics10.csv", index=False, encoding='utf-8-sig')
 print("\n===== 回测指标 =====")
 print(metrics_df.round(4))
 
@@ -152,7 +155,7 @@ print(metrics_df.round(4))
 plt.figure(figsize=(12, 5))
 plt.plot(pd.to_datetime(test_df["date"]), test_df["cum_ret_stock"], label=f"{best_stock} 持仓收益")
 plt.plot(pd.to_datetime(market_test["date"]), market_test["cum_ret_market"], label="沪深300")
-plt.title(f"CAPM 理论Alpha最高股票 ({best_stock}) 2年回测")
+plt.title(f"CAPM 理论Alpha最高股票 ({best_stock}) 10年回测")
 plt.legend()
 plt.xticks(rotation=45)
 plt.ylabel("累计净值 (基准=100)")
@@ -161,8 +164,8 @@ plt.tight_layout()
 
 # 确保文件夹存在 (脚本相对于自身运行的目录)
 os.makedirs("../results", exist_ok=True)
-plt.savefig("../results/backtest_plot.png", dpi=300)
-plt.savefig("../results/backtest_plot.svg")
+plt.savefig("../results/backtest_plot10.png", dpi=300)
+plt.savefig("../results/backtest_plot10.svg")
 plt.show()
 
 bs.logout()
