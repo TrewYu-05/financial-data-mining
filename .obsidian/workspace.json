@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "2/results/reports.md",
+                "file": "3/results/reports.md",
                 "mode": "source",
                 "source": false
               },
@@ -195,8 +195,11 @@
       "bases:新建数据库": false
     }
   },
-  "active": "71667437e7247b92",
+  "active": "6c1e1c0fc78b9ace",
   "lastOpenFiles": [
+    "3/code/factor_model.txt",
+    "3/code/factor_model - 副本.py",
+    "2/results/reports.md",
     "2/PPT/~$capm.pptx",
     "2/俞成儒-202331060931.zip",
     "2/PPT.zip",
@@ -208,8 +211,6 @@
     "2/results/backtest_metrics10.csv",
     "2/results/capm_results10.csv",
     "2/code/capm.txt",
-    "2/code/新建 文本文档.txt",
-    "2/results/backtest_plot.svg",
-    "2/results/reports.md"
+    "2/results/backtest_plot.svg"
   ]
 }

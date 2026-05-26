@@ -9,7 +9,10 @@ import os
 # ==============================
 # Configuration
 # ==============================
-plt.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei']
+plt.rcParams['font.sans-serif'] = [
+    'SimHei', 
+    'Microsoft YaHei',
+]
 plt.rcParams['axes.unicode_minus'] = False
 
 START_TRAIN = "2018-01-01"
