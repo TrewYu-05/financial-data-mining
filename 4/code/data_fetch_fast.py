@@ -13,31 +13,27 @@ while rs.error_code == "0" and rs.next():
     sz50_list.append(rs.get_row_data())
 sz50_df = pd.DataFrame(sz50_list, columns=rs.fields)
 STOCKS = sz50_df["code"].tolist()
-print(f"Total SZ50 stocks: {len(STOCKS)}")
 
-# Let's save STOCKS for reference
-with open('4/code/STOCKS.txt', 'w') as f:
-    f.write(','.join(STOCKS))
-
-# We'll use daily data and resample to monthly since peTTM is missing from monthly query in baostock
+# monthly_k
 stock_data = []
 for code in STOCKS:
-    print(f"Fetching daily k-data for {code}")
-    rs_k = bs.query_history_k_data_plus(code, "date,code,close,peTTM,turn,tradestatus,pctChg", start_date=TRAIN_START, end_date=TEST_END, frequency="d")
-    df_k = rs_k.get_data()
-    if len(df_k) > 0:
-        # resample to monthly
-        df_k['date'] = pd.to_datetime(df_k['date'])
-        df_k['year_month'] = df_k['date'].dt.to_period('M')
-        # take the last day of the month
-        df_m = df_k.groupby('year_month').last().reset_index()
-        stock_data.append(df_m)
+    # monthly frequency does not return peTTM, only daily. We must use daily.
+    # To be safe, just do daily peTTM and close.
+    rs_d = bs.query_history_k_data_plus(code, "date,code,close,peTTM", start_date=TRAIN_START, end_date=TEST_END, frequency="d")
+    df = rs_d.get_data()
+    if len(df) == 0:
+        continue
+    df['date'] = pd.to_datetime(df['date'])
+    df['year_month'] = df['date'].dt.to_period('M')
+    df['close'] = df['close'].replace("", np.nan).astype(float)
+    df['peTTM'] = df['peTTM'].replace("", np.nan).astype(float)
+    df_m = df.groupby('year_month').last().reset_index()
 
-if len(stock_data) > 0:
-    df_all_m = pd.concat(stock_data)
-    df_all_m.to_csv("4/code/monthly_k.csv", index=False)
-    print("Saved monthly_k.csv")
-else:
-    print("No data fetched.")
+    # calc return based on monthly closing
+    df_m['return'] = df_m['close'].pct_change()
+    stock_data.append(df_m)
 
+monthly_k = pd.concat(stock_data)
+monthly_k.to_csv("4/code/monthly_k.csv", index=False)
+print("Finished monthly_k.csv")
 bs.logout()

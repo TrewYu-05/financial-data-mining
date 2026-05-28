@@ -456,7 +456,7 @@ ax1.axhline(y=INIT_CAPITAL, color="gray", linestyle=":", linewidth=1, label="初
 
 # 标注最大回撤区间
 dd_start_idx = drawdown.idxmin()
-dd_end_idx = drawdown[dd_start_idx:].idxmax() if dd_start_idx < len(drawdown) - 1 else drawdown.index[-1]
+dd_end_idx = drawdown[dd_start_idx:].idxmax() if drawdown.index.get_loc(dd_start_idx) < len(drawdown) - 1 else drawdown.index[-1]
 ax1.axvspan(dd_start_idx, dd_end_idx, alpha=0.1, color="red", label=f"最大回撤区间 ({max_drawdown:.2%})")
 
 ax1.set_xlabel("日期")
