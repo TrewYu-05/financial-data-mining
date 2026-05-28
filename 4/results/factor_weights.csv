@@ -1,0 +1,4 @@
+﻿factor,factor_name,weight
+smb,SMB（规模因子）,-0.004649299074909457
+pe_recip,PE倒数（价值因子）,-0.0002689940002119423
+quality,Quality（质量因子）,0.0005838075444943093

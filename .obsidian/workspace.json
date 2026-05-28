@@ -11,14 +11,12 @@
             "id": "6c1e1c0fc78b9ace",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "3/results/reports.md",
-                "mode": "source",
-                "source": false
+                "file": "4/results/nav_plot.png"
               },
-              "icon": "lucide-file",
-              "title": "reports"
+              "icon": "lucide-image",
+              "title": "nav_plot"
             }
           },
           {
@@ -197,20 +195,24 @@
   },
   "active": "6c1e1c0fc78b9ace",
   "lastOpenFiles": [
-    "3/code/factor_model.txt",
-    "3/code/factor_model - 副本.py",
+    "4/PPT",
+    "4/新建文件夹",
+    "4/code/main.txt",
+    "4/code/main - 副本.py",
+    "4/results/factor_weights.csv",
+    "4/results/ic_series.png",
+    "4/code/main.py",
+    "4/extract_docx.py",
+    "4/results/reports.md",
+    "4/data/train_ret.csv",
+    "4/data/train_factor.csv",
+    "4/data/test_ret.csv",
+    "4/data/test_factor.csv",
+    "4/results/nav_plot.png",
+    "3/results/reports.md",
     "2/results/reports.md",
-    "2/PPT/~$capm.pptx",
-    "2/俞成儒-202331060931.zip",
-    "2/PPT.zip",
-    "2/code.zip",
-    "2/PPT/capm.pptx",
-    "2/PPT/The_Alpha_Illusion.pptx",
     "2/results/backtest_plot10.svg",
     "2/results/backtest_plot10.png",
-    "2/results/backtest_metrics10.csv",
-    "2/results/capm_results10.csv",
-    "2/code/capm.txt",
     "2/results/backtest_plot.svg"
   ]
 }
