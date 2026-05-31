@@ -33,7 +33,10 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 os.makedirs(RESULT_DIR, exist_ok=True)
 
 # 中文字体设置
-matplotlib.rcParams["font.sans-serif"] = ["SimHei", "Microsoft YaHei", "WenQuanYi Micro Hei", "DejaVu Sans"]
+plt.rcParams['font.sans-serif'] = [
+    'SimHei', 
+    'Microsoft YaHei',
+]
 matplotlib.rcParams["axes.unicode_minus"] = False
 
 
@@ -453,11 +456,6 @@ ax1.plot(months_test, nav[1:], "b-", linewidth=2, label="策略净值", marker="
 # 上证指数净值
 ax1.plot(months_test, index_nav[1:], "r--", linewidth=2, label="上证指数净值", marker="x", markersize=3)
 ax1.axhline(y=INIT_CAPITAL, color="gray", linestyle=":", linewidth=1, label="初始资金线")
-
-# 标注最大回撤区间
-dd_start_idx = drawdown.idxmin()
-dd_end_idx = drawdown[dd_start_idx:].idxmax() if drawdown.index.get_loc(dd_start_idx) < len(drawdown) - 1 else drawdown.index[-1]
-ax1.axvspan(dd_start_idx, dd_end_idx, alpha=0.1, color="red", label=f"最大回撤区间 ({max_drawdown:.2%})")
 
 ax1.set_xlabel("日期")
 ax1.set_ylabel("净值（元）")
