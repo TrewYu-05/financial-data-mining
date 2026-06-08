@@ -1,0 +1,4 @@
+*.csv
+*.parquet
+__pycache__/
+4B/results/
